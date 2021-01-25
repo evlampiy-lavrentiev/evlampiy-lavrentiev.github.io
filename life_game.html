@@ -1,0 +1,147 @@
+<html>
+	<head>
+	<body id = "my_super_body">
+		<script>
+			console.log("abacaba")
+			let t = (new Date()).getTime();
+			while ((new Date()).getTime() - t < 500) ;
+			
+			function randomInt(min, max) {
+				let rand = min + Math.random() * (max + 1 - min);
+				return Math.floor(rand);
+			}
+			let body = document.getElementById("my_super_body");
+			let table = document.createElement("table");
+			table.align = "left";
+			body.appendChild(table);
+			console.log("Hello,", "kek!");
+			const num_rows = 20;
+			const num_colums = 30;
+			var ok = 0;
+			function buttonStart() {
+				let td = document.createElement("td");
+
+				td.onclick = (event) => {
+					ok = 1 - ok;
+					console.log("button pressed", "ok =", ok);
+					if (td.style.backgroundColor == "black")
+						td.style.backgroundColor = "red";
+					else
+						td.style.backgroundColor = "black";
+				}
+				td.style.backgroundColor = "black";
+				td.style.width = "100px";
+				td.style.height = "40px";
+				return td;
+			}
+			function buttonClear() {
+				let td = document.createElement("td");
+				td.onclick = (event) => {
+					console.log("CLEAR");
+					for (let i = 0; i < num_rows; i++) {
+						for (let j = 0; j < num_colums; j++) {
+							id = document.getElementById(i + "_" + j);
+							id.style.backgroundColor = "pink";
+						}
+					}
+				}
+					td.style.backgroundColor = "orange";
+					td.style.width = "100px";
+					td.style.height = "25px";
+					return td;
+			}
+			function makeCell(i, j, col) {
+				let td = document.createElement("td");
+				td.onclick = (event) => {
+					if (!event.ctrlKey) {
+						console.log(i, j);
+						if (td.style.backgroundColor == "black") 
+							td.style.backgroundColor = "pink";
+						else
+							td.style.backgroundColor = "black";
+					} else {
+						console.log("create plane on", i, j)
+						let bibx = [0, 0, 0, -1, -2];
+						let biby = [0, 1, 2, 2, 1];
+						for (let k = 0; k < bibx.length; k++) {
+							id = document.getElementById((i + bibx[k]) + "_" + (j + biby[k]));
+							id.style.backgroundColor = "black";
+						}
+					}
+				}
+				td.setAttribute("id", i + "_" + j);
+				td.style.backgroundColor = col;
+				td.style.width = "20px";
+				td.style.height = "20px";
+				return td;
+			}
+			let arr = new Array(num_rows);
+			for (let i = 0; i < num_rows; i++) {
+				arr[i] = document.createElement("tr");
+				for (let j = 0; j < num_colums; j++) {
+					if (randomInt(0, 1) == 1)
+						colour = "pink";
+					else
+						colour = "black";
+					arr[i].appendChild(makeCell(i, j, colour));
+				}
+				table.appendChild(arr[i]);
+			}
+			let dx = [1, 1, 1, 0, -1, -1, -1, 0];
+			let dy = [-1, 0, 1, 1, 1, 0, -1, -1];
+			function update() {
+				//console.log(randomInt(1, 100));
+				let ark = new Array(num_rows);
+				for (let i = 0; i < num_rows; i++) {
+					ark[i] = new Array(num_colums);;
+					for (let j = 0; j < num_colums; j++) {
+						let cnt = 0;
+						let fir = document.getElementById(i + "_" + j);
+						for (let k = 0; k < 8; k++) {
+							let x = ((i + dx[k] + num_rows) % num_rows); 
+							let y = ((j + dy[k] + num_colums) % num_colums);
+							let id = document.getElementById(x + "_" + y);
+							if (id.style.backgroundColor == "black")
+								cnt++;
+						}
+						if (fir.style.backgroundColor == "pink") {
+							if (cnt == 3) 
+								ark[i][j] = 1;
+							else
+								ark[i][j] = 0;
+						} else if (fir.style.backgroundColor == "black") { 
+							if (cnt == 2 || cnt == 3)
+								ark[i][j] = 1;
+							else 
+								ark[i][j] = 0;
+						}
+					}
+				}
+				//console.log(ark);
+				//console.log("kek");
+				for (let i = 0; i < num_rows; i++) {
+					for (let j = 0; j < num_colums; j++) {
+						let id = document.getElementById(i + "_" + j);
+						if (ark[i][j] == 0) 
+							id.style.backgroundColor = "pink";
+						else
+							id.style.backgroundColor = "black";
+					}
+				}
+			}
+			let body1 = document.getElementById("my_super_body");
+			let table1 = document.createElement("table");
+			let table2 = document.createElement("table");
+			table1.align = "right";
+			table2.align = "right";
+			body1.appendChild(table2);
+			body1.appendChild(table1);
+			table1.appendChild(buttonStart());
+			table2.appendChild(buttonClear());
+			function kek() {
+				if (ok == 1)
+					update();
+			}
+			setInterval(kek, 130);
+		</script>
+</html>
